@@ -7,29 +7,49 @@
 using namespace System;
 using namespace Microsoft::Win32;
 using namespace Microsoft::VisualBasic;
+using namespace System::Security;
 
 void LaunchWinVer() {
 	System::Diagnostics::Process::Start("C:\\Windows\\System32\\winver.exe");
 }
 
 void ChangeOwnerName() {
-	RegistryKey ^ rk = Registry::LocalMachine->OpenSubKey(L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", true);
-	Console::WriteLine("Current value : {0}", rk->GetValue(L"RegisteredOwner"));
-	Console::WriteLine("Enter desired name for Registered Owner");
-	rk->SetValue(L"RegisteredOwner", Console::ReadLine());
-	Console::WriteLine(L"Windows Registered Owner changed to  {0}", rk->GetValue(L"RegisteredOwner"));
-	rk->Close();
-	LaunchWinVer();
+	try {
+		RegistryKey ^ rk = Registry::LocalMachine->OpenSubKey(L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", true);
+		Console::WriteLine("Current value : {0}", rk->GetValue(L"RegisteredOwner"));
+		Console::WriteLine("Enter desired name for Registered Owner");
+		rk->SetValue(L"RegisteredOwner", Console::ReadLine());
+		Console::WriteLine(L"Windows Registered Owner changed to  {0}", rk->GetValue(L"RegisteredOwner"));
+		rk->Close();
+		LaunchWinVer();
+	}
+	catch (SecurityException ^se)
+	{
+		Console::WriteLine("Permission to read registry was denied");
+	}
+	catch (Exception ^e) {
+		Console::WriteLine("The following error occured : " + e->ToString());
+	}
 }
 
 void ChangeOrganisationName() {
-	RegistryKey ^ rk = Registry::LocalMachine->OpenSubKey(L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", true);
-	Console::WriteLine("Current value : {0}", rk->GetValue(L"RegisteredOrganization"));
-	Console::WriteLine("Enter desired name for Registered Owner");
-	rk->SetValue(L"RegisteredOrganization", Console::ReadLine());
-	Console::WriteLine(L"Windows Registered Owner changed to  {0}", rk->GetValue(L"RegisteredOrganization"));
-	rk->Close();
-	LaunchWinVer();
+	try
+	{
+		RegistryKey ^ rk = Registry::LocalMachine->OpenSubKey(L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", true);
+		Console::WriteLine("Current value : {0}", rk->GetValue(L"RegisteredOrganization"));
+		Console::WriteLine("Enter desired name for Registered Owner");
+		rk->SetValue(L"RegisteredOrganization", Console::ReadLine());
+		Console::WriteLine(L"Windows Registered Owner changed to  {0}", rk->GetValue(L"RegisteredOrganization"));
+		rk->Close();
+		LaunchWinVer();
+	}
+	catch (SecurityException ^se)
+	{
+		Console::WriteLine("Permission to read registry was denied");
+	}
+	catch (Exception ^e) {
+		Console::WriteLine("The following error occured : " + e->ToString());
+	}
 }
 
 void DisplayMenu() {
